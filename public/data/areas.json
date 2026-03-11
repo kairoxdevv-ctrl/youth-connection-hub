@@ -1,0 +1,26 @@
+[
+  {
+    "id": "gaming",
+    "name": "Gaming",
+    "description": "Talk about games, esports, and chill co-op nights.",
+    "icon": "🎮"
+  },
+  {
+    "id": "coding",
+    "name": "Coding",
+    "description": "Build together, share tips, and ship small wins.",
+    "icon": "💻"
+  },
+  {
+    "id": "music",
+    "name": "Music",
+    "description": "Songs, production, instruments, and playlists.",
+    "icon": "🎵"
+  },
+  {
+    "id": "wellbeing",
+    "name": "Wellbeing",
+    "description": "Support, habits, and staying grounded.",
+    "icon": "🌿"
+  }
+]

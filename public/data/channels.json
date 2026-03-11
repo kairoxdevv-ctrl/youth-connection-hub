@@ -1,0 +1,50 @@
+[
+  {
+    "id": "valorant",
+    "area_id": "gaming",
+    "name": "Valorant",
+    "description": "Agents, strats, and highlight clips."
+  },
+  {
+    "id": "minecraft",
+    "area_id": "gaming",
+    "name": "Minecraft",
+    "description": "Servers, builds, and survival stories."
+  },
+  {
+    "id": "frontend",
+    "area_id": "coding",
+    "name": "Frontend",
+    "description": "UI, CSS, React, and design systems."
+  },
+  {
+    "id": "backend",
+    "area_id": "coding",
+    "name": "Backend",
+    "description": "APIs, data, and reliable systems."
+  },
+  {
+    "id": "production",
+    "area_id": "music",
+    "name": "Production",
+    "description": "Beats, mixing, and DAW tips."
+  },
+  {
+    "id": "acoustic",
+    "area_id": "music",
+    "name": "Acoustic",
+    "description": "Guitar, piano, and songwriting."
+  },
+  {
+    "id": "mindset",
+    "area_id": "wellbeing",
+    "name": "Mindset",
+    "description": "Motivation, routines, and reflection."
+  },
+  {
+    "id": "fitness",
+    "area_id": "wellbeing",
+    "name": "Fitness",
+    "description": "Movement, training, and recovery."
+  }
+]

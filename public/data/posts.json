@@ -1,0 +1,50 @@
+[
+  {
+    "id": "p1",
+    "channel_id": "valorant",
+    "title": "Best budget agents for ranked",
+    "content": "Who are your go-to agents for solo queue when you want reliable utility? I have been running Sova + Omen and it feels consistent.",
+    "author": "Nova",
+    "created_at": "2026-02-18T18:10:00Z"
+  },
+  {
+    "id": "p2",
+    "channel_id": "minecraft",
+    "title": "Show your latest build",
+    "content": "Drop a screenshot description of your favorite build this month. I am working on a cliffside library.",
+    "author": "Arlo",
+    "created_at": "2026-02-26T20:25:00Z"
+  },
+  {
+    "id": "p3",
+    "channel_id": "frontend",
+    "title": "Dark theme tips without feeling heavy",
+    "content": "What color combos are you using for dark UI that still feels warm? I want contrast without eye strain.",
+    "author": "Mira",
+    "created_at": "2026-03-01T15:40:00Z"
+  },
+  {
+    "id": "p4",
+    "channel_id": "backend",
+    "title": "APIs that scale for clubs",
+    "content": "We are planning a schedule system for a club. What lightweight stack would you choose if you wanted to keep maintenance low?",
+    "author": "Zen",
+    "created_at": "2026-02-22T09:15:00Z"
+  },
+  {
+    "id": "p5",
+    "channel_id": "production",
+    "title": "Favorite plugins for clean vocals",
+    "content": "Looking for free or low-cost plugins that can tighten vocals without sounding robotic.",
+    "author": "Lena",
+    "created_at": "2026-03-02T11:05:00Z"
+  },
+  {
+    "id": "p6",
+    "channel_id": "mindset",
+    "title": "Resetting after a busy week",
+    "content": "How do you reset when everything piles up? I want a small checklist that actually helps.",
+    "author": "Kai",
+    "created_at": "2026-02-28T07:50:00Z"
+  }
+]

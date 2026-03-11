@@ -1,186 +1,72 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import ThemeToggle from '@/components/ThemeToggle'
-
-type Report = {
-  id: string
-  post_id: string
-  reason: string
-  created_at: string
-}
-
-type Post = {
-  id: string
-  content: string
-  channel_id: string
-  hidden: boolean
-}
-
-type Notification = {
-  id: string
-  report_id: string
-  read: boolean
-}
+import { getPosts, Post } from '@/lib/dataClient'
+import { getLocalComments, removeLocalComment, LocalComment, isAdmin } from '@/lib/localStore'
+import { formatDate } from '@/lib/format'
 
 export default function ModerationPage() {
   const router = useRouter()
-  const [reports, setReports] = useState<Report[]>([])
-  const [posts, setPosts] = useState<Record<string, Post>>({})
-  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
+  const [comments, setComments] = useState<LocalComment[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function load() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        router.push('/login')
-        return
-      }
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', session.user.id)
-        .single()
-
-      if (!profile || !['owner', 'admin', 'mod'].includes(profile.role)) {
-        router.push('/')
-        return
-      }
-
-      const { data: notifRows } = await supabase
-        .from('mod_notifications')
-        .select('*')
-
-      setNotifications(notifRows || [])
-
-      const { data: reportRows } = await supabase
-        .from('reports')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      setReports(reportRows || [])
-
-      const postIds = [...new Set((reportRows || []).map(r => r.post_id))]
-
-      if (postIds.length > 0) {
-        const { data: postRows } = await supabase
-          .from('posts')
-          .select('id, content, channel_id, hidden')
-          .in('id', postIds)
-
-        const map: Record<string, Post> = {}
-        postRows?.forEach(p => (map[p.id] = p))
-        setPosts(map)
-      }
-
-      setLoading(false)
+    if (!isAdmin()) {
+      router.push('/login')
+      return
     }
 
-    load()
+    getPosts().then(p => {
+      setPosts(p)
+      setComments(getLocalComments())
+      setLoading(false)
+    })
   }, [router])
 
-  async function deletePost(postId: string) {
-    if (!confirm('Delete this post?')) return
-    await supabase.from('posts').delete().eq('id', postId)
-    setPosts(p => {
-      const copy = { ...p }
-      delete copy[postId]
-      return copy
-    })
+  function deleteComment(id: string) {
+    if (!confirm('Delete this comment?')) return
+    removeLocalComment(id)
+    setComments(getLocalComments())
   }
 
-  async function toggleHidden(postId: string, hidden: boolean) {
-    await supabase.from('posts').update({ hidden: !hidden }).eq('id', postId)
-    setPosts(p => ({
-      ...p,
-      [postId]: { ...p[postId], hidden: !hidden }
-    }))
+  if (loading) {
+    return <div className="mx-auto max-w-5xl px-4 py-10 text-slate-400">Loading...</div>
   }
-
-  async function markReportRead(reportId: string) {
-    await supabase
-      .from('mod_notifications')
-      .update({ read: true })
-      .eq('report_id', reportId)
-
-    setNotifications(n =>
-      n.map(x =>
-        x.report_id === reportId ? { ...x, read: true } : x
-      )
-    )
-  }
-
-  if (loading) return <p style={{ padding: 20 }}>Loading…</p>
 
   return (
-    <main style={{ maxWidth: 1000, margin: '40px auto' }}>
-      {/* HEADER */}
-      <header
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 24,
-        }}
-      >
-        <h2>Moderation</h2>
-        <ThemeToggle />
-      </header>
+    <main className="mx-auto max-w-5xl px-4 py-10">
+      <h1 className="text-2xl font-semibold text-white">Moderation</h1>
+      <p className="mt-2 text-sm text-slate-400">
+        Manage comments added from this browser session. Static seed comments cannot be removed.
+      </p>
 
-      {/* REPORTS */}
-      {reports.map(r => {
-        const post = posts[r.post_id]
-        const notif = notifications.find(n => n.report_id === r.id)
-
-        return (
-          <div
-            key={r.id}
-            style={{
-              border: '1px solid var(--border)',
-              borderRadius: 8,
-              padding: 16,
-              marginBottom: 16,
-              background: notif?.read ? 'var(--card)' : '#3f1d1d',
-            }}
-          >
-            <p><strong>Reason:</strong> {r.reason}</p>
-            <p><strong>Post:</strong> {post?.content || 'Post not found'}</p>
-
-            {post && (
-              <>
-                <p>Status: {post.hidden ? 'Hidden' : 'Visible'}</p>
-
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  <a href={`/channel/${post.channel_id}`}>Go to channel</a>
-
-                  <button onClick={() => toggleHidden(post.id, post.hidden)}>
-                    {post.hidden ? 'Unhide' : 'Hide'}
-                  </button>
-
-                  <button
-                    onClick={() => deletePost(post.id)}
-                    style={{ color: 'var(--danger)' }}
-                  >
-                    Delete
-                  </button>
-
-                  {!notif?.read && (
-                    <button onClick={() => markReportRead(r.id)}>
-                      Mark as read
-                    </button>
-                  )}
+      {comments.length === 0 ? (
+        <p className="mt-6 text-sm text-slate-500">No local comments yet.</p>
+      ) : (
+        <div className="mt-6 space-y-4">
+          {comments.map(comment => {
+            const post = posts.find(p => p.id === comment.post_id)
+            return (
+              <div key={comment.id} className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+                  <span>{comment.author}</span>
+                  <span>{formatDate(comment.created_at)}</span>
                 </div>
-              </>
-            )}
-
-            <small>{new Date(r.created_at).toLocaleString()}</small>
-          </div>
-        )
-      })}
+                <p className="mt-2 text-sm text-slate-200">{comment.content}</p>
+                <p className="mt-2 text-xs text-slate-500">Post: {post?.title || 'Unknown'}</p>
+                <button
+                  onClick={() => deleteComment(comment.id)}
+                  className="mt-3 rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-200 hover:border-slate-500"
+                >
+                  Delete comment
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </main>
   )
 }

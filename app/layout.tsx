@@ -1,61 +1,18 @@
-'use client'
+import './globals.css'
+import TopBar from '@/components/TopBar'
+import type { ReactNode } from 'react'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { useRouter } from 'next/navigation'
+export const metadata = {
+  title: 'Youth Connection Hub',
+  description: 'A static community hub for youth connections.',
+}
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState<any>(null)
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user || null)
-      setLoading(false)
-    })
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user || null)
-      }
-    )
-
-    return () => {
-      listener.subscription.unsubscribe()
-    }
-  }, [])
-
-  async function logout() {
-    await supabase.auth.signOut()
-    router.push('/login')
-  }
-
-  if (loading) return null
-
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif' }}>
-        {user && (
-          <header
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '12px 20px',
-              borderBottom: '1px solid #ddd',
-            }}
-          >
-            <strong>Youth Connection Hub</strong>
-            <button onClick={logout}>Logout</button>
-          </header>
-        )}
-
-        <main>{children}</main>
+      <body className="min-h-screen bg-slate-950 text-slate-100">
+        <TopBar />
+        {children}
       </body>
     </html>
   )
