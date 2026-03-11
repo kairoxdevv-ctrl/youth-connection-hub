@@ -22,20 +22,21 @@ export default function ChannelClient({ channelId }: { channelId: string }) {
   }, [])
 
   const channel = channels.find(c => c.id === channelId)
-  const areaId = channel?.area_id
+  const activeChannel = channel || channels[0]
+  const activeChannelId = activeChannel?.id
+  const areaId = activeChannel?.area_id
   const area = areas.find(a => a.id === areaId)
-  const areaChannels = useMemo(() => channels.filter(c => c.area_id === areaId), [channels, areaId])
+  const areaChannels = useMemo(
+    () => channels.filter(c => c.area_id === areaId),
+    [channels, areaId]
+  )
 
   const channelPosts = posts
-    .filter(p => p.channel_id === channelId)
+    .filter(p => (activeChannelId ? p.channel_id === activeChannelId : true))
     .sort((a, b) => b.created_at.localeCompare(a.created_at))
 
   if (loading) {
     return <div className="mx-auto max-w-6xl px-4 py-10 text-slate-400">Loading...</div>
-  }
-
-  if (!channel) {
-    return <div className="mx-auto max-w-6xl px-4 py-10 text-slate-400">Channel not found.</div>
   }
 
   return (
@@ -43,14 +44,27 @@ export default function ChannelClient({ channelId }: { channelId: string }) {
       areas={areas}
       channels={areaChannels}
       activeAreaId={area?.id}
-      activeChannelId={channelId}
+      activeChannelId={activeChannelId}
       channelTitle={area ? `${area.name} channels` : 'Channels'}
     >
       <div className="space-y-6">
         <div>
           <p className="text-xs uppercase tracking-widest text-slate-500">Channel</p>
-          <h1 className="text-2xl font-semibold text-white">{channel.name}</h1>
-          <p className="mt-2 text-sm text-slate-400">{channel.description}</p>
+          {channel ? (
+            <>
+              <h1 className="text-2xl font-semibold text-white">{channel.name}</h1>
+              <p className="mt-2 text-sm text-slate-400">{channel.description}</p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-2xl font-semibold text-white">
+                {activeChannel ? activeChannel.name : 'Browse channels'}
+              </h1>
+              <p className="mt-2 text-sm text-slate-400">
+                That channel does not exist. Here is a live channel you can explore.
+              </p>
+            </>
+          )}
         </div>
 
         <section className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">

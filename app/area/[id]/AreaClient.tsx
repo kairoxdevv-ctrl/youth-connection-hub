@@ -22,7 +22,9 @@ export default function AreaClient({ areaId }: { areaId: string }) {
   }, [])
 
   const area = areas.find(a => a.id === areaId)
-  const areaChannels = channels.filter(c => c.area_id === areaId)
+  const activeArea = area || areas[0]
+  const activeAreaId = activeArea?.id
+  const areaChannels = channels.filter(c => c.area_id === activeAreaId)
 
   const latestPosts = useMemo(() => {
     const channelIds = new Set(areaChannels.map(c => c.id))
@@ -36,24 +38,51 @@ export default function AreaClient({ areaId }: { areaId: string }) {
     return <div className="mx-auto max-w-6xl px-4 py-10 text-slate-400">Loading...</div>
   }
 
-  if (!area) {
-    return <div className="mx-auto max-w-6xl px-4 py-10 text-slate-400">Area not found.</div>
-  }
-
   return (
     <Shell
       areas={areas}
       channels={areaChannels}
-      activeAreaId={areaId}
+      activeAreaId={activeAreaId}
       channelTitle="Channels"
     >
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-white">
-            {area.icon} {area.name}
-          </h1>
-          <p className="mt-2 text-sm text-slate-400">{area.description}</p>
+          {area ? (
+            <>
+              <h1 className="text-2xl font-semibold text-white">
+                {area.icon} {area.name}
+              </h1>
+              <p className="mt-2 text-sm text-slate-400">{area.description}</p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-2xl font-semibold text-white">Explore areas</h1>
+              <p className="mt-2 text-sm text-slate-400">
+                That area does not exist. Pick one of the active areas below.
+              </p>
+            </>
+          )}
         </div>
+
+        {!area && (
+          <section className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400">Areas</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {areas.map(item => (
+                <Link
+                  key={item.id}
+                  href={`/area/${item.id}`}
+                  className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 transition hover:border-slate-600"
+                >
+                  <div className="text-lg font-semibold text-white">
+                    {item.icon} {item.name}
+                  </div>
+                  <p className="mt-2 text-sm text-slate-400">{item.description}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="rounded-xl border border-slate-800 bg-slate-950/40 p-4">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400">Latest posts</h2>

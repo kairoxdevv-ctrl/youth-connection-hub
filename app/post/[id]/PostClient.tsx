@@ -30,22 +30,24 @@ export default function PostClient({ postId }: { postId: string }) {
   }, [])
 
   const post = posts.find(p => p.id === postId)
-  const channel = channels.find(c => c.id === post?.channel_id)
+  const activePost = post || posts[0]
+  const channel = channels.find(c => c.id === activePost?.channel_id)
   const area = areas.find(a => a.id === channel?.area_id)
   const areaChannels = channels.filter(c => c.area_id === channel?.area_id)
 
+  const activePostId = activePost?.id || postId
   const allComments = useMemo(() => {
-    const base = comments.filter(c => c.post_id === postId)
-    const local = localComments.filter(c => c.post_id === postId)
+    const base = comments.filter(c => c.post_id === activePostId)
+    const local = localComments.filter(c => c.post_id === activePostId)
     return [...local, ...base].sort((a, b) => b.created_at.localeCompare(a.created_at))
-  }, [comments, localComments, postId])
+  }, [comments, localComments, activePostId])
 
   function handleAddComment() {
     if (!user) return
     if (!content.trim()) return
 
     const next = addLocalComment({
-      post_id: postId,
+      post_id: activePostId,
       author: user.username,
       content: content.trim(),
     })
@@ -58,33 +60,46 @@ export default function PostClient({ postId }: { postId: string }) {
     return <div className="mx-auto max-w-6xl px-4 py-10 text-slate-400">Loading...</div>
   }
 
-  if (!post || !channel) {
-    return <div className="mx-auto max-w-6xl px-4 py-10 text-slate-400">Post not found.</div>
-  }
-
   return (
     <Shell
       areas={areas}
       channels={areaChannels}
       activeAreaId={area?.id}
-      activeChannelId={channel.id}
+      activeChannelId={channel?.id}
       channelTitle={area ? `${area.name} channels` : 'Channels'}
     >
       <div className="space-y-6">
         <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-          <Link href={`/area/${area?.id || ''}`} className="hover:text-slate-200">
-            {area?.name || 'Area'}
-          </Link>
-          <span>/</span>
-          <Link href={`/channel/${channel.id}`} className="hover:text-slate-200">
-            {channel.name}
-          </Link>
+          {area && channel ? (
+            <>
+              <Link href={`/area/${area.id}`} className="hover:text-slate-200">
+                {area.name}
+              </Link>
+              <span>/</span>
+              <Link href={`/channel/${channel.id}`} className="hover:text-slate-200">
+                {channel.name}
+              </Link>
+            </>
+          ) : (
+            <span>Explore posts</span>
+          )}
         </div>
 
         <article className="rounded-2xl border border-slate-800 bg-slate-950/50 p-6">
-          <h1 className="text-2xl font-semibold text-white">{post.title}</h1>
-          <div className="mt-2 text-xs text-slate-500">{post.author} · {formatDate(post.created_at)}</div>
-          <p className="mt-4 whitespace-pre-line text-sm text-slate-200">{post.content}</p>
+          {activePost ? (
+            <>
+              <h1 className="text-2xl font-semibold text-white">{activePost.title}</h1>
+              <div className="mt-2 text-xs text-slate-500">
+                {activePost.author} · {formatDate(activePost.created_at)}
+              </div>
+              <p className="mt-4 whitespace-pre-line text-sm text-slate-200">{activePost.content}</p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-2xl font-semibold text-white">No posts yet</h1>
+              <p className="mt-2 text-sm text-slate-400">Pick a channel to start exploring.</p>
+            </>
+          )}
         </article>
 
         <section className="rounded-2xl border border-slate-800 bg-slate-950/40 p-6">
