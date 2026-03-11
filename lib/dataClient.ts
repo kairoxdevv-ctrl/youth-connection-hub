@@ -30,7 +30,7 @@ export type Comment = {
 }
 
 const cache: Record<string, unknown> = {}
-const inflight: Record<string, Promise<unknown>> = {}
+const inflight: Partial<Record<string, Promise<unknown>>> = {}
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
 
 async function fetchJson<T>(file: string): Promise<T> {
