@@ -46,5 +46,21 @@
     "content": "How do you reset when everything piles up? I want a small checklist that actually helps.",
     "author": "Kai",
     "created_at": "2026-02-28T07:50:00Z"
+  },
+  {
+    "id": "p7",
+    "channel_id": "acoustic",
+    "title": "Warm acoustic tone without expensive gear",
+    "content": "Share your best low-budget mic and room tips. I am recording in a small bedroom and want less harshness.",
+    "author": "Sol",
+    "created_at": "2026-03-03T16:20:00Z"
+  },
+  {
+    "id": "p8",
+    "channel_id": "fitness",
+    "title": "Simple weekly routine that sticks",
+    "content": "Looking for a 3-day routine that balances strength and mobility. What is realistic with a busy schedule?",
+    "author": "Jae",
+    "created_at": "2026-03-04T08:10:00Z"
   }
 ]

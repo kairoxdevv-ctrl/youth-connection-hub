@@ -7,19 +7,17 @@ import { getUser, setUser } from '@/lib/localStore'
 export default function LoginPage() {
   const router = useRouter()
   const [username, setUsername] = useState('')
-  const [adminMode, setAdminMode] = useState(false)
 
   useEffect(() => {
     const existing = getUser()
     if (existing) {
       setUsername(existing.username)
-      setAdminMode(existing.role === 'admin')
     }
   }, [])
 
   function handleLogin() {
     if (!username.trim()) return
-    setUser({ username: username.trim(), role: adminMode ? 'admin' : 'user' })
+    setUser({ username: username.trim() })
     router.push('/')
   }
 
@@ -38,16 +36,6 @@ export default function LoginPage() {
           placeholder="e.g. Nova"
           className="mt-2 w-full rounded-lg border border-slate-800 bg-slate-950/60 p-3 text-sm text-slate-100"
         />
-
-        <label className="mt-4 flex items-center gap-2 text-sm text-slate-400">
-          <input
-            type="checkbox"
-            checked={adminMode}
-            onChange={e => setAdminMode(e.target.checked)}
-            className="h-4 w-4 rounded border-slate-700 bg-slate-900"
-          />
-          Enable admin mode
-        </label>
 
         <button
           onClick={handleLogin}

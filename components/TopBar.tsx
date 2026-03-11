@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { clearUser, getUser, isAdmin, LocalUser } from '@/lib/localStore'
+import { clearUser, getUser, LocalUser } from '@/lib/localStore'
 import { useRouter } from 'next/navigation'
 
 export default function TopBar() {
@@ -30,11 +30,6 @@ export default function TopBar() {
           {user ? (
             <>
               <span className="text-slate-300">@{user.username}</span>
-              {isAdmin() && (
-                <Link href="/moderation" className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 hover:border-slate-500">
-                  Moderation
-                </Link>
-              )}
               <button
                 onClick={logout}
                 className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 hover:border-slate-500"

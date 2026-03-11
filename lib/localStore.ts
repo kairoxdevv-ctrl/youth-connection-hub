@@ -1,6 +1,5 @@
 export type LocalUser = {
   username: string
-  role?: 'admin' | 'user'
 }
 
 export type LocalComment = {
@@ -12,7 +11,6 @@ export type LocalComment = {
 }
 
 const USER_KEY = 'user'
-const ROLE_KEY = 'role'
 const COMMENTS_KEY = 'ych_comments'
 
 function safeParse<T>(raw: string | null, fallback: T): T {
@@ -28,25 +26,17 @@ export function getUser(): LocalUser | null {
   if (typeof window === 'undefined') return null
   const username = localStorage.getItem(USER_KEY)
   if (!username) return null
-  const role = localStorage.getItem(ROLE_KEY) as LocalUser['role'] | null
-  return { username, role: role || 'user' }
+  return { username }
 }
 
 export function setUser(user: LocalUser) {
   if (typeof window === 'undefined') return
   localStorage.setItem(USER_KEY, user.username)
-  localStorage.setItem(ROLE_KEY, user.role || 'user')
 }
 
 export function clearUser() {
   if (typeof window === 'undefined') return
   localStorage.removeItem(USER_KEY)
-  localStorage.removeItem(ROLE_KEY)
-}
-
-export function isAdmin(): boolean {
-  if (typeof window === 'undefined') return false
-  return localStorage.getItem(ROLE_KEY) === 'admin'
 }
 
 export function getLocalComments(): LocalComment[] {

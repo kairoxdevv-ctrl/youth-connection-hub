@@ -19,5 +19,40 @@
     "author": "Riley",
     "content": "I do a 20 min walk and list 3 priorities only. Helps me reset fast.",
     "created_at": "2026-02-28T10:05:00Z"
+  },
+  {
+    "id": "c4",
+    "post_id": "p2",
+    "author": "Moss",
+    "content": "Cliffside library sounds awesome. I just finished a glass greenhouse.",
+    "created_at": "2026-02-27T18:05:00Z"
+  },
+  {
+    "id": "c5",
+    "post_id": "p4",
+    "author": "Toni",
+    "content": "A small Next.js + SQLite setup with scheduled backups is usually enough.",
+    "created_at": "2026-02-23T12:45:00Z"
+  },
+  {
+    "id": "c6",
+    "post_id": "p5",
+    "author": "Iris",
+    "content": "Try a gentle compressor and a de-esser before EQ. It keeps it natural.",
+    "created_at": "2026-03-02T19:20:00Z"
+  },
+  {
+    "id": "c7",
+    "post_id": "p7",
+    "author": "Rowan",
+    "content": "A thick blanket behind the mic helps a lot in small rooms.",
+    "created_at": "2026-03-03T19:55:00Z"
+  },
+  {
+    "id": "c8",
+    "post_id": "p8",
+    "author": "Mika",
+    "content": "3 days full-body works for me. Keep it short and track one metric.",
+    "created_at": "2026-03-04T10:30:00Z"
   }
 ]
