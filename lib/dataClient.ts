@@ -31,12 +31,14 @@ export type Comment = {
 
 const cache: Record<string, unknown> = {}
 const inflight: Record<string, Promise<unknown>> = {}
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
 
 async function fetchJson<T>(file: string): Promise<T> {
   if (cache[file]) return cache[file] as T
   if (inflight[file]) return inflight[file] as Promise<T>
 
-  inflight[file] = fetch(`/data/${file}`)
+  const url = `${basePath}/data/${file}`
+  inflight[file] = fetch(url)
     .then(res => {
       if (!res.ok) throw new Error(`Failed to load ${file}`)
       return res.json() as Promise<T>
